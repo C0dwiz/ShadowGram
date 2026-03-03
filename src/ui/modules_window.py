@@ -6,7 +6,8 @@ import random
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
                              QPushButton, QScrollArea, QCheckBox, QComboBox, 
                              QTextEdit, QFrame, QMessageBox, QFileDialog, QLineEdit)
-from PyQt6.QtCore import Qt, pyqtSignal, QTimer
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QSize
 from datetime import datetime
 
 """
@@ -19,7 +20,7 @@ from datetime import datetime
 """
 
 from src.core import logic
-from src.core.constants import CONFIG_FILE
+from src.core.constants import CONFIG_FILE, START_ICON_PATH
 from src.core.module_manager import ModuleManager
 from src.modules_styles import MODULES_STYLESHEET
 from src.ui.active_tasks_window import ActiveTasksWindow
@@ -127,7 +128,9 @@ class ModulesWindow(QWidget):
         self.params_layout = QVBoxLayout(self.params_container)
         self.params_layout.setContentsMargins(0, 10, 0, 10)
         right_layout.addWidget(self.params_container)
-        self.btn_run = QPushButton("⚡ ЗАПУСТИТЬ ПЛАГИН")
+        self.btn_run = QPushButton(" ЗАПУСТИТЬ ПЛАГИН")
+        self.btn_run.setIcon(QIcon(str(START_ICON_PATH)))
+        self.btn_run.setIconSize(QSize(20, 20))
         self.btn_run.setObjectName("RunModuleBtn")
         self.btn_run.clicked.connect(self.start_module_execution)
         right_layout.addWidget(self.btn_run)

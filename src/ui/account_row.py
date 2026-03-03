@@ -3,8 +3,8 @@ import threading
 import json
 import asyncio
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QCheckBox, QInputDialog, QMessageBox
-from PyQt6.QtGui import QPixmap, QPainter, QPainterPath, QCursor
-from PyQt6.QtCore import Qt, pyqtSignal, QEvent, QEasingCurve, QPropertyAnimation, QParallelAnimationGroup
+from PyQt6.QtGui import QPixmap, QPainter, QPainterPath, QCursor, QIcon
+from PyQt6.QtCore import Qt, pyqtSignal, QEvent, QEasingCurve, QPropertyAnimation, QParallelAnimationGroup, QSize
 
 """
 Виджет отдельной строки аккаунта в списке.
@@ -35,7 +35,12 @@ from PyQt6.QtCore import Qt, pyqtSignal, QEvent, QEasingCurve, QPropertyAnimatio
 from src.core import logic
 from src.modules import session_checker
 from src import styles
-from src.core.constants import CONFIG_FILE
+from src.core.constants import (
+    CONFIG_FILE, SEARCH_ICON_PATH, NEW_PROXY_ICON_PATH, 
+    DEVICE_ICON_PATH, NOTE_ICON_PATH, PROXY_ICON_PATH, 
+    FOLDER_ICON_PATH, CASH_ICON_PATH, DELETE_ICON_PATH,
+    START_ICON_PATH, CANCEL_ICON_PATH
+)
 
 class TelegramAccountRow(QFrame):
     proxy_check_finished = pyqtSignal(bool)
@@ -104,18 +109,20 @@ class TelegramAccountRow(QFrame):
         layout.addWidget(self.status_label)
 
         btns = [
-            ("🔍", "SessionBtn", self.run_session_check, "Проверить сессию"),
-            ("✏️", "EditBtn", self.edit_proxy, "Изменить прокси"),
-            ("💻", "DeviceBtn", self.edit_device_name, "Имя устройства"),
-            ("📝", "NotesBtn", self.edit_notes, "Заметки"),
-            ("🛡️", "CheckBtn", self.run_proxy_check, "Проверить прокси"),
-            ("📁", "ExplorerBtn", lambda: logic.open_explorer(self.workdir), "Открыть папку"),
-            ("🧹", "ClearBtn", self.clear_account_cache, "Чистка кэша"),
-            ("🗑️", "DeleteBtn", self.confirm_delete, "Удалить")
+            (SEARCH_ICON_PATH, "SessionBtn", self.run_session_check, "Проверить сессию"),
+            (NEW_PROXY_ICON_PATH, "EditBtn", self.edit_proxy, "Изменить прокси"),
+            (DEVICE_ICON_PATH, "DeviceBtn", self.edit_device_name, "Имя устройства"),
+            (NOTE_ICON_PATH, "NotesBtn", self.edit_notes, "Заметки"),
+            (PROXY_ICON_PATH, "CheckBtn", self.run_proxy_check, "Проверить прокси"),
+            (FOLDER_ICON_PATH, "ExplorerBtn", lambda: logic.open_explorer(self.workdir), "Открыть папку"),
+            (CASH_ICON_PATH, "ClearBtn", self.clear_account_cache, "Чистка кэша"),
+            (DELETE_ICON_PATH, "DeleteBtn", self.confirm_delete, "Удалить")
         ]
 
-        for icon, obj_name, slot, tip in btns:
-            btn = QPushButton(icon)
+        for icon_path, obj_name, slot, tip in btns:
+            btn = QPushButton()
+            btn.setIcon(QIcon(str(icon_path)))
+            btn.setIconSize(QSize(20, 20))
             btn.setObjectName(obj_name)
             btn.setFixedWidth(38)
             btn.setToolTip(tip)
@@ -126,7 +133,9 @@ class TelegramAccountRow(QFrame):
             layout.addWidget(btn)
 
         self.btn_launch = QPushButton("Запустить")
-        self.btn_launch.setFixedWidth(100)
+        self.btn_launch.setIcon(QIcon(str(START_ICON_PATH)))
+        self.btn_launch.setIconSize(QSize(18, 18))
+        self.btn_launch.setFixedWidth(115)
         self.btn_launch.clicked.connect(self.toggle_telegram)
         layout.addWidget(self.btn_launch)
 
@@ -292,6 +301,7 @@ class TelegramAccountRow(QFrame):
         self.status_label.setText("Запущен" if is_running else "Остановлен")
         self.status_label.setObjectName("StatusRunning" if is_running else "StatusStopped")
         self.btn_launch.setText("Закрыть" if is_running else "Запустить")
+        self.btn_launch.setIcon(QIcon(str(CANCEL_ICON_PATH if is_running else START_ICON_PATH)))
         self.btn_launch.setStyleSheet("background-color: #c62828;" if is_running else "")
         self.status_label.style().unpolish(self.status_label); self.status_label.style().polish(self.status_label)
 

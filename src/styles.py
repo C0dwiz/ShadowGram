@@ -82,11 +82,11 @@ QPushButton#EditBtn:hover, QPushButton#NotesBtn:hover, QPushButton#CheckBtn:hove
 }}
 
 QPushButton#DeviceBtn {{ 
-    background-color: #e65100; 
-    border-color: #bf360c; 
+    background-color: #1565c0; 
+    border-color: #0d47a1; 
 }}
 QPushButton#DeviceBtn:hover {{ 
-    background-color: #ef6c00; 
+    background-color: #1976d2; 
 }}
 
 QPushButton#DeleteBtn {{ 

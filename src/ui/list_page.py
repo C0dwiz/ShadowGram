@@ -27,7 +27,12 @@ from PyQt6.QtCore import Qt, pyqtSignal, QPropertyAnimation, QEasingCurve, QPara
 
 from src.core import logic
 from src.ui.account_row import TelegramAccountRow
-from src.core.constants import CONFIG_FILE, ICON_PATH, LOGO_PATH, SUCCESS_ICON_PATH, CANCEL_ICON_PATH, PROXY_ICON_PATH
+from src.core.constants import (
+    CONFIG_FILE, ICON_PATH, LOGO_PATH, SUCCESS_ICON_PATH, 
+    CANCEL_ICON_PATH, PROXY_ICON_PATH, SETTINGS_ICON_PATH, 
+    CASH_ICON_PATH, VIEV_ICON_PATH, MODULS_ICON_PATH, 
+    FOLDER_ICON_PATH, NEW_PROXY_ICON_PATH
+)
 
 class AccountListPage(QWidget):
     settings_requested = pyqtSignal()
@@ -65,13 +70,17 @@ class AccountListPage(QWidget):
         title_layout.addWidget(title_label)
         title_layout.addStretch()
 
-        self.btn_modules = QPushButton("📦 Модули")
+        self.btn_modules = QPushButton(" Модули")
+        self.btn_modules.setIcon(QIcon(str(MODULS_ICON_PATH)))
+        self.btn_modules.setIconSize(QSize(20, 20))
         self.btn_modules.setFixedWidth(120)
         self.btn_modules.setToolTip("Запуск модулей автоматизации")
         self.btn_modules.clicked.connect(self.modules_requested.emit)
         title_layout.addWidget(self.btn_modules)
 
-        self.btn_settings = QPushButton("⚙️")
+        self.btn_settings = QPushButton()
+        self.btn_settings.setIcon(QIcon(str(SETTINGS_ICON_PATH)))
+        self.btn_settings.setIconSize(QSize(24, 24))
         self.btn_settings.setFixedWidth(45)
         self.btn_settings.clicked.connect(self.settings_requested.emit)
         title_layout.addWidget(self.btn_settings)
@@ -83,21 +92,26 @@ class AccountListPage(QWidget):
         toolbar.addWidget(self.select_all_cb)
         toolbar.addStretch()
 
-        for btn_text, slot in [(" Запустить", self.bulk_launch), ("Остановить", self.bulk_stop), ("Проверить", self.bulk_check_proxy), ("🧹 Кэш", self.bulk_clear_cache)]:
+        for btn_text, slot in [(" Запустить", self.bulk_launch), (" Остановить", self.bulk_stop), (" Проверить", self.bulk_check_proxy), (" Кэш", self.bulk_clear_cache)]:
             btn = QPushButton(btn_text)
             if btn_text == " Запустить":
                 btn.setIcon(QIcon(str(SUCCESS_ICON_PATH)))
                 btn.setIconSize(QSize(20, 20))
-            elif btn_text == "Остановить":
+            elif btn_text == " Остановить":
                 btn.setIcon(QIcon(str(CANCEL_ICON_PATH)))
-                btn.setIconSize(QSize(24, 24))
-            elif btn_text == "Проверить":
+                btn.setIconSize(QSize(20, 20))
+            elif btn_text == " Проверить":
                 btn.setIcon(QIcon(str(PROXY_ICON_PATH)))
-                btn.setIconSize(QSize(24, 24))
+                btn.setIconSize(QSize(20, 20))
+            elif btn_text == " Кэш":
+                btn.setIcon(QIcon(str(CASH_ICON_PATH)))
+                btn.setIconSize(QSize(22, 22))
             btn.clicked.connect(slot)
             toolbar.addWidget(btn)
             
-        self.btn_toggle_proxies = QPushButton("👁️")
+        self.btn_toggle_proxies = QPushButton()
+        self.btn_toggle_proxies.setIcon(QIcon(str(VIEV_ICON_PATH)))
+        self.btn_toggle_proxies.setIconSize(QSize(24, 24))
         self.btn_toggle_proxies.setFixedWidth(45)
         self.btn_toggle_proxies.setToolTip("Показать/Скрыть все прокси")
         self.btn_toggle_proxies.clicked.connect(self.toggle_all_proxies)
@@ -105,8 +119,7 @@ class AccountListPage(QWidget):
         layout.addLayout(toolbar)
 
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("🔍 Поиск по имени или заметкам...")
-        self.search_input.textChanged.connect(self.filter_accounts)
+        self.search_input.setPlaceholderText(" Поиск по имени или заметкам...")
         layout.addWidget(self.search_input)
 
         self.scroll = QScrollArea()
@@ -131,12 +144,17 @@ class AccountListPage(QWidget):
         
         path_l = QHBoxLayout()
         self.input_path = QLineEdit(); self.input_path.setPlaceholderText("Путь к папке (workdir)"); path_l.addWidget(self.input_path)
-        btn_br = QPushButton("📁"); btn_br.setFixedWidth(40); btn_br.clicked.connect(self.browse_directory); path_l.addWidget(btn_br)
+        btn_br = QPushButton(); btn_br.setFixedWidth(40)
+        btn_br.setIcon(QIcon(str(FOLDER_ICON_PATH)))
+        btn_br.setIconSize(QSize(20, 20))
+        btn_br.clicked.connect(self.browse_directory); path_l.addWidget(btn_br)
         inputs.addLayout(path_l)
         
         proxy_l = QHBoxLayout()
         self.input_proxy = QLineEdit(); self.input_proxy.setPlaceholderText("HTTP Proxy (http://user:pass@host:port)"); proxy_l.addWidget(self.input_proxy)
-        self.btn_check_creation_proxy = QPushButton("🛡️")
+        self.btn_check_creation_proxy = QPushButton()
+        self.btn_check_creation_proxy.setIcon(QIcon(str(NEW_PROXY_ICON_PATH)))
+        self.btn_check_creation_proxy.setIconSize(QSize(22, 22))
         self.btn_check_creation_proxy.setObjectName("CheckBtn")
         self.btn_check_creation_proxy.setFixedWidth(40)
         self.btn_check_creation_proxy.clicked.connect(self.run_creation_proxy_check)
@@ -235,5 +253,6 @@ class AccountListPage(QWidget):
 
     def toggle_all_proxies(self):
         self.proxies_hidden = not self.proxies_hidden
-        self.btn_toggle_proxies.setText("🔓" if not self.proxies_hidden else "👁️")
+        # Иконка глаза остается той же, так как она универсальна для действия "просмотр"
+        # но мы можем добавить визуальную обратную связь через смену иконки, если будет нужно
         for row in self.rows: row.set_proxy_hidden(self.proxies_hidden)
