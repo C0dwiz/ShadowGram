@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+.venv/
+
+# Private Data
+config.json
+*.session
+*.session-journal
+*.log
+*.conf
+avatar.jpg
+viewer.py
+engine.py
+
+# OS
+.DS_Store
+
+# build
+FULLSYS.md
+NEWMODULE.md
+PROJECT_CONTEXT.md
+DEBUG
+

@@ -1,0 +1,12 @@
+# Core GUI Framework
+PyQt6>=6.6.0
+PyQt6-Multimedia>=6.6.0
+
+# Telegram Client Library (MTProto)
+hydrogram>=0.2.1
+
+# Performance & Encryption (recommended for hydrogram)
+tgcrypto>=1.2.5
+
+# Optional: Networking
+PySocks>=1.7.1
